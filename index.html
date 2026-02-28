@@ -166,7 +166,19 @@ function guardarStorage(){
 function mostrar(id){
     document.querySelectorAll("section").forEach(s=>s.classList.remove("active"))
     document.getElementById(id).classList.add("active")
-    actualizar()
+    actualizar(){let invTabla = ""
+inventario.forEach((i,index)=>{
+    invTabla += `
+    <tr>
+        <td>${i.nombre}</td>
+        <td>${i.cantidad}</td>
+        <td>${i.unidad}</td>
+        <td>
+            <button class="btn-mini" onclick="eliminarInventario(${index})">🗑</button>
+        </td>
+    </tr>`
+})
+document.getElementById("listaInventario").innerHTML = invTabla}
 }
 
 function guardarPedido(){
@@ -312,4 +324,5 @@ actualizar()
 </script>
 </body>
 </html>
+
 
