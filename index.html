@@ -143,8 +143,8 @@ td, th{
 <h2>Nuevo pedido</h2>
 <input id="cliente" placeholder="Nombre del cliente">
 <select id="producto">
-<option value="8">Concha individual ($8)</option>
-<option value="35">Charola 5 ($35)</option>
+<option value="8" data-nombre="Concha individual">Concha individual ($8)</option>
+<option value="35" data-nombre="Charola 5">Charola 5 ($35)</option>
 </select>
 <input id="cantidad" type="number" step="0.01" placeholder="Cantidad">
 
@@ -171,6 +171,8 @@ td, th{
 <thead>
 <tr>
 <th>Cliente</th>
+<th>Producto</th>
+<th>Cantidad</th>
 <th>Total</th>
 <th>Pago</th>
 <th>Acciones</th>
@@ -184,6 +186,8 @@ td, th{
 <thead>
 <tr>
 <th>Cliente</th>
+<th>Producto</th>
+<th>Cantidad</th>
 <th>Total</th>
 <th>Pago</th>
 <th>Regresar</th>
@@ -284,12 +288,14 @@ function mostrar(id){
 
 function guardarPedido(){
     let cliente = document.getElementById("cliente").value
-    let precio = parseFloat(document.getElementById("producto").value)
+    let selectProd = document.getElementById("producto")
+    let precio = parseFloat(selectProd.value)
+    let nombreProd = selectProd.options[selectProd.selectedIndex].dataset.nombre
     let cantidad = parseFloat(document.getElementById("cantidad").value)
     let dia = document.getElementById("diaSemana").value
     if(!cliente || !cantidad) return alert("Completa los datos")
     let total = precio * cantidad
-    pedidos.push({cliente,total,pagado:false,dia})
+    pedidos.push({cliente,total,pagado:false,dia,producto:nombreProd,cantidadPedido:cantidad})
     guardarStorage()
     actualizar()
 }
@@ -301,6 +307,17 @@ function marcarPagado(index){
         tipo:"Ganancia",
         fecha:new Date().toLocaleString()
     })
+    guardarStorage()
+    actualizar()
+}
+
+// Nueva función para desmarcar pago
+function desmarcarPagado(index){
+    pedidos[index].pagado = false
+    // Opcional: quitar el movimiento de Ganancia correspondiente
+    let total = pedidos[index].total
+    let movIndex = movimientos.findIndex(m => m.tipo === "Ganancia" && m.monto === total)
+    if(movIndex !== -1) movimientos.splice(movIndex,1)
     guardarStorage()
     actualizar()
 }
@@ -319,7 +336,6 @@ function eliminarPedido(index){
     actualizar()
 }
 
-// AQUÍ EL CAMBIO: Ahora en lugar de borrar, lo regresa a la lista de pedidos activos
 function eliminarRealizado(index){
     pedidos.push(realizados[index])
     realizados.splice(index,1)
@@ -378,11 +394,15 @@ function actualizar(){
         tabla+=`
         <tr>
         <td>${p.cliente} (${p.dia})</td>
+        <td>${p.producto}</td>
+        <td>${p.cantidadPedido}</td>
         <td>$${p.total.toFixed(2)}</td>
         <td>${pago}</td>
         <td>
             <button class="btn-mini" onclick="marcarRealizado(${index})">✔</button>
-            <button class="btn-mini" onclick="marcarPagado(${index})">💵</button>
+            ${p.pagado 
+                ? `<button class="btn-mini" onclick="desmarcarPagado(${index})">❌</button>` 
+                : `<button class="btn-mini" onclick="marcarPagado(${index})">💵</button>`}
             <button class="btn-mini" onclick="eliminarPedido(${index})">🗑</button>
         </td>
         </tr>`
@@ -402,6 +422,8 @@ function actualizar(){
         tablaReal+=`
         <tr>
         <td>${p.cliente} (${p.dia})</td>
+        <td>${p.producto}</td>
+        <td>${p.cantidadPedido}</td>
         <td>$${p.total.toFixed(2)}</td>
         <td>${pago}</td>
         <td><button class="btn-mini" onclick="eliminarRealizado(${index})">↩</button></td>
@@ -447,4 +469,5 @@ actualizar()
 </script>
 
 </body>
+</html>
 </html>
