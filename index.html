@@ -166,18 +166,7 @@ function guardarStorage(){
 function mostrar(id){
     document.querySelectorAll("section").forEach(s=>s.classList.remove("active"))
     document.getElementById(id).classList.add("active")
-    actualizar(){let invTabla = ""
-inventario.forEach((i,index)=>{
-    invTabla += `
-    <tr>
-        <td>${i.nombre}</td>
-        <td>${i.cantidad}</td>
-        <td>${i.unidad}</td>
-        <td>
-            <button class="btn-mini" onclick="eliminarInventario(${index})">🗑</button>
-        </td>
-    </tr>`
-})
+    actualizar()
 document.getElementById("listaInventario").innerHTML = invTabla}
 }
 
@@ -257,6 +246,7 @@ function mostrarPapelera(tipo){
 }
 
 function actualizar(){
+    // --- Actualizar Pedidos ---
     let totalPedidos = pedidos.length
     let totalDinero = 0
     let totalConchas = 0
@@ -288,6 +278,7 @@ function actualizar(){
     document.getElementById("totalesProductos").innerText=
         "Total conchas individuales: " + totalConchas + " | Total charolas: " + totalCharolas
 
+    // --- Pedidos Realizados ---
     let tablaReal=""
     realizados.forEach((p,index)=>{
         let pago = p.pagado ? `<span class="pagado">Pagado</span>` : `<span class="noPagado">No pagado</span>`
@@ -303,6 +294,22 @@ function actualizar(){
     })
     document.getElementById("listaRealizados").innerHTML=tablaReal
 
+    // --- Inventario ---
+    let invTabla = ""
+    inventario.forEach((i,index)=>{
+        invTabla += `
+        <tr>
+            <td>${i.nombre}</td>
+            <td>${i.cantidad}</td>
+            <td>${i.unidad}</td>
+            <td>
+                <button class="btn-mini" onclick="eliminarInventario(${index})">🗑</button>
+            </td>
+        </tr>`
+    })
+    document.getElementById("listaInventario").innerHTML = invTabla
+
+    // --- Finanzas ---
     let balance=0
     let movTabla=""
     movimientos.forEach((m,index)=>{
@@ -324,5 +331,6 @@ actualizar()
 </script>
 </body>
 </html>
+
 
 
