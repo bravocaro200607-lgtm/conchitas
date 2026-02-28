@@ -213,6 +213,21 @@ function marcarRealizado(index){ realizados.push(pedidos[index]); pedidos.splice
 function eliminarPedido(index){ papelera.pedidos.push(pedidos[index]); pedidos.splice(index,1); guardarStorage(); actualizar() }
 function eliminarRealizado(index){ pedidos.push(realizados[index]); realizados.splice(index,1); guardarStorage(); actualizar() }
 function eliminarInventario(index){ papelera.inventario.push(inventario[index]); inventario.splice(index,1); guardarStorage(); actualizar() }
+function agregarInventario(){
+    let nombre = document.getElementById("prodNombre").value
+    let cantidad = parseFloat(document.getElementById("prodCant").value)
+    let unidad = document.getElementById("prodUnidad").value
+
+    if(!nombre || isNaN(cantidad) || cantidad <= 0){
+        return alert("Completa los datos correctamente")
+    }
+
+    inventario.push({nombre, cantidad, unidad})
+    document.getElementById("prodNombre").value = ""
+    document.getElementById("prodCant").value = ""
+    guardarStorage()
+    actualizar()
+}
 function eliminarMovimiento(index){ papelera.movimientos.push(movimientos[index]); movimientos.splice(index,1); guardarStorage(); actualizar() }
 function mostrarPapelera(tipo){
     let items = papelera[tipo]; if(items.length===0) return alert("Papelera vacía")
@@ -297,3 +312,4 @@ actualizar()
 </script>
 </body>
 </html>
+
