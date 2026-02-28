@@ -4,128 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Control de Conchitas</title>
-
 <style>
 *{ box-sizing:border-box; }
-
-body{
-    font-family: Arial;
-    margin:0;
-    background:#89CFF0;
-}
-
-.banner{
-    width:100%;
-    height:200px;
-    overflow:hidden;
-}
-.banner video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-nav{
-    background:#6495ED;
-    padding:10px;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:5px;
-}
-
-nav button{
-    flex:1 1 45%;
-    padding:12px;
-    font-size:14px;
-    background:#00BFFF;
-    color:white;
-    border:none;
-    border-radius:8px;
-}
-
-section{
-    display:none;
-    padding:15px;
-    background:white;
-    margin:10px;
-    border-radius:12px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
+body{ font-family: Arial; margin:0; background:#89CFF0; }
+.banner{ width:100%; height:200px; overflow:hidden; }
+.banner video{ width:100%; height:100%; object-fit:cover; }
+nav{ background:#6495ED; padding:10px; display:flex; flex-wrap:wrap; justify-content:center; gap:5px; }
+nav button{ flex:1 1 45%; padding:12px; font-size:14px; background:#00BFFF; color:white; border:none; border-radius:8px; }
+section{ display:none; padding:15px; background:white; margin:10px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
 .active{ display:block; }
-
-input, select{
-    width:100%;
-    padding:12px;
-    margin:6px 0;
-    border:1px solid #89CFF0;
-    border-radius:8px;
-    font-size:16px;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    margin:6px 0;
-    background:#00BFFF;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.btn-mini{
-    width:auto;
-    padding:5px 8px;
-    font-size:14px;
-    margin:2px;
-}
-
+input, select{ width:100%; padding:12px; margin:6px 0; border:1px solid #89CFF0; border-radius:8px; font-size:16px; }
+button{ width:100%; padding:12px; margin:6px 0; background:#00BFFF; color:white; border:none; border-radius:8px; font-size:16px; cursor:pointer; }
+.btn-mini{ width:auto; padding:5px 8px; font-size:14px; margin:2px; }
 .papelera{ background:#c62828; }
-
 .pagado{ color:MediumBlue; font-weight:bold; }
 .noPagado{ color:Blue; font-weight:bold; }
-
-table{
-    width:100%;
-    margin-top:10px;
-    border-collapse:collapse;
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
-}
-th{
-    background:#6495ED;
-    color:white;
-}
-td, th{
-    border:1px solid #89CFF0;
-    padding:10px;
-    text-align:center;
-}
-
-#balance{
-    font-weight:bold;
-    font-size:18px;
-    color:#00008B;
-    margin-top:10px;
-}
-
-#resumenPedidos, #totalesProductos{
-    font-weight:bold;
-    margin-bottom:10px;
-}
-
-@media (max-width:600px){
-    nav button{ flex:1 1 100%; }
-    .banner{ height:170px; }
-}
+table{ width:100%; margin-top:10px; border-collapse:collapse; display:block; overflow-x:auto; white-space:nowrap; }
+th{ background:#6495ED; color:white; }
+td, th{ border:1px solid #89CFF0; padding:10px; text-align:center; }
+#balance{ font-weight:bold; font-size:18px; color:#00008B; margin-top:10px; }
+#resumenPedidos, #totalesProductos{ font-weight:bold; margin-bottom:10px; }
+@media (max-width:600px){ nav button{ flex:1 1 100%; } .banner{ height:170px; } }
 </style>
 </head>
-
 <body>
-
 <header class="banner">
 <video autoplay muted loop playsinline>
 <source src="https://i.imgur.com/uHhrx5O.mp4" type="video/mp4">
@@ -208,7 +110,6 @@ td, th{
 <option value="pzas">Piezas</option>
 </select>
 <button onclick="agregarInventario()">Agregar</button>
-
 <table>
 <thead>
 <tr>
@@ -220,7 +121,6 @@ td, th{
 </thead>
 <tbody id="listaInventario"></tbody>
 </table>
-
 <button class="papelera" onclick="mostrarPapelera('inventario')">🗑 Papelera Inventario</button>
 </section>
 
@@ -228,13 +128,11 @@ td, th{
 <h2>Finanzas</h2>
 <input id="monto" type="number" step="0.01" placeholder="Cantidad">
 <select id="tipo">
-<option>Ganancia</option>
-<option>Inversion</option>
+<option value="Ganancia">Ganancia</option>
+<option value="Inversion">Inversión</option>
 </select>
 <button onclick="agregarMovimiento()">Guardar</button>
-
 <p id="balance"></p>
-
 <h3>Historial</h3>
 <table>
 <thead>
@@ -247,7 +145,6 @@ td, th{
 </thead>
 <tbody id="listaMovimientos"></tbody>
 </table>
-
 <button class="papelera" onclick="mostrarPapelera('movimientos')">🗑 Papelera Finanzas</button>
 </section>
 
@@ -256,13 +153,7 @@ let pedidos = JSON.parse(localStorage.getItem("pedidos")) || []
 let realizados = JSON.parse(localStorage.getItem("realizados")) || []
 let inventario = JSON.parse(localStorage.getItem("inventario")) || []
 let movimientos = JSON.parse(localStorage.getItem("movimientos")) || []
-
-let papelera = JSON.parse(localStorage.getItem("papelera")) || {
-    pedidos:[],
-    realizados:[],
-    inventario:[],
-    movimientos:[]
-}
+let papelera = JSON.parse(localStorage.getItem("papelera")) || {pedidos:[], realizados:[], inventario:[], movimientos:[]}
 
 function guardarStorage(){
     localStorage.setItem("pedidos",JSON.stringify(pedidos))
@@ -294,57 +185,16 @@ function guardarPedido(){
 
 function marcarPagado(index){
     pedidos[index].pagado = true
-    movimientos.push({
-        monto: pedidos[index].total,
-        tipo:"Ganancia",
-        fecha:new Date().toLocaleString()
-    })
+    movimientos.push({monto: pedidos[index].total, tipo:"Ganancia", fecha:new Date().toLocaleString(), origen:"Pedido"})
     guardarStorage()
     actualizar()
 }
 
 function desmarcarPagado(index){
     pedidos[index].pagado = false
-    // Eliminamos la ganancia asociada a este pedido
-    movimientos = movimientos.filter(m => !(m.tipo=="Ganancia" && m.monto == pedidos[index].total))
-    guardarStorage()
-    actualizar()
-}
-
-function marcarRealizado(index){
-    realizados.push(pedidos[index])
-    pedidos.splice(index,1)
-    guardarStorage()
-    actualizar()
-}
-
-function eliminarPedido(index){
-    papelera.pedidos.push(pedidos[index])
-    pedidos.splice(index,1)
-    guardarStorage()
-    actualizar()
-}
-
-function eliminarRealizado(index){
-    pedidos.push(realizados[index])
-    realizados.splice(index,1)
-    guardarStorage()
-    actualizar()
-}
-
-function agregarInventario(){
-    let nombre = document.getElementById("prodNombre").value
-    let cantidad = parseFloat(document.getElementById("prodCant").value)
-    let unidad = document.getElementById("prodUnidad").value
-    if(!nombre || !cantidad) return alert("Completa los datos")
-    inventario.push({nombre,cantidad,unidad})
-    guardarStorage()
-    actualizar()
-}
-
-function eliminarInventario(index){
-    papelera.inventario.push(inventario[index])
-    inventario.splice(index,1)
+    let total = pedidos[index].total
+    let movIndex = movimientos.findIndex(m => m.tipo==="Ganancia" && m.monto===total && m.origen==="Pedido")
+    if(movIndex!==-1) movimientos.splice(movIndex,1)
     guardarStorage()
     actualizar()
 }
@@ -352,58 +202,44 @@ function eliminarInventario(index){
 function agregarMovimiento(){
     let monto = parseFloat(document.getElementById("monto").value)
     let tipo = document.getElementById("tipo").value
-    if(!monto || !tipo) return alert("Completa los datos")
-    movimientos.push({monto,tipo,fecha:new Date().toLocaleString()})
+    if(isNaN(monto) || monto<=0) return alert("Ingresa un monto válido")
+    movimientos.push({monto, tipo, fecha:new Date().toLocaleString(), origen:"Manual"})
+    document.getElementById("monto").value = ""
     guardarStorage()
     actualizar()
 }
 
-function eliminarMovimiento(index){
-    papelera.movimientos.push(movimientos[index])
-    movimientos.splice(index,1)
-    guardarStorage()
-    actualizar()
-}
-
+function marcarRealizado(index){ realizados.push(pedidos[index]); pedidos.splice(index,1); guardarStorage(); actualizar() }
+function eliminarPedido(index){ papelera.pedidos.push(pedidos[index]); pedidos.splice(index,1); guardarStorage(); actualizar() }
+function eliminarRealizado(index){ pedidos.push(realizados[index]); realizados.splice(index,1); guardarStorage(); actualizar() }
+function eliminarInventario(index){ papelera.inventario.push(inventario[index]); inventario.splice(index,1); guardarStorage(); actualizar() }
+function eliminarMovimiento(index){ papelera.movimientos.push(movimientos[index]); movimientos.splice(index,1); guardarStorage(); actualizar() }
 function mostrarPapelera(tipo){
-    let items = papelera[tipo]
-    if(items.length===0) return alert("Papelera vacía")
-    let texto="Elementos eliminados:\n"
-    items.forEach((item,i)=> texto+= (i+1)+" - "+JSON.stringify(item)+"\n")
+    let items = papelera[tipo]; if(items.length===0) return alert("Papelera vacía")
+    let texto="Elementos eliminados:\n"; items.forEach((item,i)=> texto+= (i+1)+" - "+JSON.stringify(item)+"\n")
     let opcion=prompt(texto+"\nEscribe número para restaurar o 'vaciar'")
-    if(opcion==="vaciar"){
-        papelera[tipo]=[]
-    }else{
-        let index=parseInt(opcion)-1
-        if(items[index]){
-            if(tipo==="pedidos") pedidos.push(items[index])
-            if(tipo==="realizados") realizados.push(items[index])
-            if(tipo==="inventario") inventario.push(items[index])
-            if(tipo==="movimientos") movimientos.push(items[index])
-            papelera[tipo].splice(index,1)
-        }
-    }
-    guardarStorage()
-    actualizar()
+    if(opcion==="vaciar"){ papelera[tipo]=[] }
+    else{ let index=parseInt(opcion)-1; if(items[index]){
+        if(tipo==="pedidos") pedidos.push(items[index])
+        if(tipo==="realizados") realizados.push(items[index])
+        if(tipo==="inventario") inventario.push(items[index])
+        if(tipo==="movimientos") movimientos.push(items[index])
+        papelera[tipo].splice(index,1)
+    }}
+    guardarStorage(); actualizar()
 }
 
 function actualizar(){
-    // Pedidos activos
     let totalPedidos = pedidos.length
     let totalDinero = 0
     let totalConchas = 0
     let totalCharolas = 0
     let tabla=""
-
     pedidos.forEach((p,index)=>{
         totalDinero += p.total
-        if(p.producto=="Concha individual") totalConchas += p.cantidadPedido
-        if(p.producto=="Charola 5") totalCharolas += p.cantidadPedido
-
-        let pago = p.pagado ? 
-        `<span class="pagado">Pagado</span> <button class="btn-mini" onclick="desmarcarPagado(${index})">❌</button>` : 
-        `<span class="noPagado">No pagado</span>`
-
+        if(p.producto==="Concha individual") totalConchas += p.cantidadPedido
+        if(p.producto==="Charola 5") totalCharolas += p.cantidadPedido
+        let pago = p.pagado ? `<span class="pagado">Pagado</span>` : `<span class="noPagado">No pagado</span>`
         tabla+=`
         <tr>
         <td>${p.cliente} (${p.dia})</td>
@@ -413,26 +249,21 @@ function actualizar(){
         <td>${pago}</td>
         <td>
             <button class="btn-mini" onclick="marcarRealizado(${index})">✔</button>
+            ${p.pagado ? `<button class="btn-mini" onclick="desmarcarPagado(${index})">❌</button>` 
+                        : `<button class="btn-mini" onclick="marcarPagado(${index})">💵</button>`}
             <button class="btn-mini" onclick="eliminarPedido(${index})">🗑</button>
         </td>
         </tr>`
     })
-
     document.getElementById("listaPedidos").innerHTML=tabla
     document.getElementById("resumenPedidos").innerText=
-        "Pedidos activos: " + totalPedidos + 
-        " | Total pendiente: $" + totalDinero.toFixed(2)
+        "Pedidos activos: " + totalPedidos + " | Total pendiente: $" + totalDinero.toFixed(2)
     document.getElementById("totalesProductos").innerText=
-        "Total Conchas individuales: " + totalConchas + 
-        " | Total Charolas: " + totalCharolas
+        "Total conchas individuales: " + totalConchas + " | Total charolas: " + totalCharolas
 
-    // Pedidos realizados
     let tablaReal=""
     realizados.forEach((p,index)=>{
-        let pago = p.pagado ? 
-        `<span class="pagado">Pagado</span>` : 
-        `<span class="noPagado">No pagado</span>`
-
+        let pago = p.pagado ? `<span class="pagado">Pagado</span>` : `<span class="noPagado">No pagado</span>`
         tablaReal+=`
         <tr>
         <td>${p.cliente} (${p.dia})</td>
@@ -445,28 +276,11 @@ function actualizar(){
     })
     document.getElementById("listaRealizados").innerHTML=tablaReal
 
-    // Inventario
-    let inv=""
-    inventario.forEach((i,index)=>{
-        inv+=`
-        <tr>
-        <td>${i.nombre}</td>
-        <td>${i.cantidad}</td>
-        <td>${i.unidad}</td>
-        <td>
-            <button class="btn-mini" onclick="eliminarInventario(${index})">🗑</button>
-        </td>
-        </tr>`
-    })
-    document.getElementById("listaInventario").innerHTML=inv
-
-    // Finanzas
     let balance=0
     let movTabla=""
     movimientos.forEach((m,index)=>{
         if(m.tipo=="Ganancia") balance+=m.monto
         else balance-=m.monto
-
         movTabla+=`
         <tr>
         <td>${m.tipo}</td>
@@ -481,6 +295,5 @@ function actualizar(){
 
 actualizar()
 </script>
-
 </body>
 </html>
