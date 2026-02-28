@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Control de Conchitas</title>
 <style>
 body{
@@ -13,47 +12,29 @@ body{
 nav{
     background:#ff9800;
     padding:10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 }
 nav button{
     margin:5px;
     padding:10px;
-    cursor: pointer;
 }
 section{
     display:none;
     padding:20px;
-    background: white;
-    margin: 10px;
-    border-radius: 8px;
 }
 .active{
     display:block;
 }
 input, select, button{
-    padding:10px;
-    margin:5px 0;
-    width: 100%;
-    box-sizing: border-box;
+    padding:8px;
+    margin:5px;
 }
 table{
     border-collapse:collapse;
     width:100%;
-    margin-top: 10px;
 }
 td, th{
     border:1px solid #ccc;
     padding:8px;
-    text-align: center;
-    font-size: 14px;
-}
-th { background: #eee; }
-
-/* Contenedor para que la tabla no se salga en el celular */
-.table-wrapper {
-    overflow-x: auto;
 }
 </style>
 </head>
@@ -69,61 +50,61 @@ th { background: #eee; }
 <section id="pedido" class="active">
 <h2>Nuevo pedido</h2>
 
-<label>Nombre del Cliente:</label>
 <input id="cliente" placeholder="Cliente">
-
-<label>Teléfono:</label>
 <input id="telefono" placeholder="Teléfono">
-
-<label>Fecha de Entrega:</label>
-<input id="fechaEntrega" type="date">
-
-<label>Producto:</label>
-<select id="producto">
+<input id="fecha" type="date"> <select id="producto">
 <option value="7">Concha individual ($7)</option>
 <option value="35">Charola 5 ($35)</option>
 </select>
 
-<label>Cantidad:</label>
-<input id="cantidad" type="number" placeholder="Cantidad piezas">
+<input id="cantidad" type="number" placeholder="Cantidad">
 
-<button onclick="guardarPedido()" style="background: #ff9800; color: white; border: none; font-weight: bold;">Guardar Pedido</button>
+<button onclick="guardarPedido()">Guardar</button>
+
+<p id="total"></p>
 </section>
 
 <section id="verPedidos">
-<h2>Pedidos Registrados</h2>
-<div class="table-wrapper">
-    <table>
-    <thead>
-    <tr>
-    <th>Entrega</th>
-    <th>Cliente</th>
-    <th>Cant.</th>
-    <th>Total</th>
-    </tr>
-    </thead>
-    <tbody id="listaPedidos"></tbody>
-    </table>
-</div>
+<h2>Pedidos</h2>
+<table>
+<thead>
+<tr>
+<th>Entrega</th> <th>Cliente</th>
+<th>Producto</th>
+<th>Cantidad</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody id="listaPedidos"></tbody>
+</table>
 </section>
 
 <section id="inventario">
 <h2>Inventario</h2>
+
 <input id="prodNombre" placeholder="Producto">
 <input id="prodCant" type="number" placeholder="Cantidad">
+
 <button onclick="agregarInventario()">Agregar</button>
+
 <ul id="listaInventario"></ul>
+
 </section>
 
 <section id="finanzas">
 <h2>Finanzas</h2>
-<input id="monto" type="number" placeholder="Monto $">
+
+<input id="monto" type="number" placeholder="Cantidad">
+
 <select id="tipo">
 <option>Ganancia</option>
 <option>Inversion</option>
 </select>
-<button onclick="agregarMovimiento()">Guardar Movimiento</button>
-<p id="balance" style="font-weight: bold; font-size: 1.2em;"></p>
+
+<button onclick="agregarMovimiento()">Guardar</button>
+
+<p id="balance"></p>
+
 </section>
 
 <script>
@@ -133,94 +114,112 @@ let inventario = JSON.parse(localStorage.getItem("inventario")) || []
 let movimientos = JSON.parse(localStorage.getItem("movimientos")) || []
 
 function mostrar(id){
-    document.querySelectorAll("section").forEach(s=>{
-        s.classList.remove("active")
-    })
-    document.getElementById(id).classList.add("active")
-    actualizar()
+
+document.querySelectorAll("section").forEach(s=>{
+s.classList.remove("active")
+})
+
+document.getElementById(id).classList.add("active")
+
+actualizar()
+
 }
 
 function guardarPedido(){
-    let cliente = document.getElementById("cliente").value
-    let fecha = document.getElementById("fechaEntrega").value
-    let precio = document.getElementById("producto").value
-    let cantidad = document.getElementById("cantidad").value
 
-    if(!cliente || !fecha || !cantidad) return alert("Por favor llena todos los campos")
+let cliente = document.getElementById("cliente").value
+let fecha = document.getElementById("fecha").value // Captura de fecha
+let precio = document.getElementById("producto").value
+let cantidad = document.getElementById("cantidad").value
 
-    let total = precio * cantidad
+let total = precio * cantidad
 
-    pedidos.push({
-        cliente,
-        fecha,
-        precio,
-        cantidad,
-        total
-    })
+pedidos.push({
+cliente,
+fecha, // Guardado de fecha
+precio,
+cantidad,
+total
+})
 
-    localStorage.setItem("pedidos", JSON.stringify(pedidos))
-    alert("Pedido guardado con éxito")
-    
-    // Limpiar campos
-    document.getElementById("cliente").value = ""
-    document.getElementById("cantidad").value = ""
-    
-    actualizar()
+localStorage.setItem("pedidos",JSON.stringify(pedidos))
+
+alert("Guardado")
+
+actualizar()
+
 }
 
 function actualizar(){
-    // Actualizar Tabla Pedidos
-    let tabla=""
-    // Ordenar pedidos por fecha para que veas qué entregar primero
-    pedidos.sort((a,b) => new Date(a.fecha) - new Date(b.fecha));
 
-    pedidos.forEach(p=>{
-        tabla+=`
-        <tr>
-        <td>${p.fecha}</td>
-        <td>${p.cliente}</td>
-        <td>${p.cantidad}</td>
-        <td>$${p.total}</td>
-        </tr>
-        `
-    })
-    document.getElementById("listaPedidos").innerHTML=tabla
+let tabla=""
 
-    // Actualizar Inventario
-    let inv=""
-    inventario.forEach(i=>{
-        inv+= `<li>${i.nombre} : ${i.cantidad}</li>`
-    })
-    document.getElementById("listaInventario").innerHTML=inv
+pedidos.forEach(p=>{
+tabla+=`
+<tr>
+<td>${p.fecha || ''}</td> <td>${p.cliente}</td>
+<td>$${p.precio}</td>
+<td>${p.cantidad}</td>
+<td>$${p.total}</td>
+</tr>
+`
+})
 
-    // Actualizar Finanzas
-    let balance=0
-    movimientos.forEach(m=>{
-        if(m.tipo=="Ganancia") balance+=m.monto
-        else balance-=m.monto
-    })
-    document.getElementById("balance").innerText="Dinero actual: $"+balance
+document.getElementById("listaPedidos").innerHTML=tabla
+
+
+let inv=""
+
+inventario.forEach(i=>{
+inv+=`<li>${i.nombre} : ${i.cantidad}</li>`
+})
+
+document.getElementById("listaInventario").innerHTML=inv
+
+
+let balance=0
+
+movimientos.forEach(m=>{
+if(m.tipo=="Ganancia") balance+=m.monto
+else balance-=m.monto
+})
+
+document.getElementById("balance").innerText="Dinero actual: $"+balance
+
 }
 
 function agregarInventario(){
-    let nombre=document.getElementById("prodNombre").value
-    let cantidad=document.getElementById("prodCant").value
-    if(!nombre || !cantidad) return;
-    inventario.push({ nombre, cantidad })
-    localStorage.setItem("inventario",JSON.stringify(inventario))
-    actualizar()
+
+let nombre=document.getElementById("prodNombre").value
+let cantidad=document.getElementById("prodCant").value
+
+inventario.push({
+nombre,
+cantidad
+})
+
+localStorage.setItem("inventario",JSON.stringify(inventario))
+
+actualizar()
+
 }
 
 function agregarMovimiento(){
-    let monto=parseFloat(document.getElementById("monto").value)
-    let tipo=document.getElementById("tipo").value
-    if(!monto) return;
-    movimientos.push({ monto, tipo })
-    localStorage.setItem("movimientos",JSON.stringify(movimientos))
-    actualizar()
+
+let monto=parseFloat(document.getElementById("monto").value)
+let tipo=document.getElementById("tipo").value
+
+movimientos.push({
+monto,
+tipo
+})
+
+localStorage.setItem("movimientos",JSON.stringify(movimientos))
+
+actualizar()
+
 }
 
-// Iniciar
 actualizar()
 
 </script>
